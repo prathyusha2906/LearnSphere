@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnSphere - AI Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .gen-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+            max-width: 640px;
+            margin: 0 auto;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .gen-card h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .gen-card p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .field { margin-bottom: 16px; }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .output-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.75;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            min-height: 100px;
+            display: none;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .output-box.show { display: block; }
+        .loading { color: var(--muted); font-style: italic; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧠</div>
+    <h1>LearnSphere</h1>
+    <nav style="display:flex; gap:4px; margin-left: 20px;">
+        <a href="/">🏠 Home</a>
+        <a href="/generator" class="active">⚡ AI Generator</a>
+    </nav>
+    <div class="header-badge">✨ AI-Powered</div>
+</header>
+
+<main>
+    <div class="gen-card">
+        <h2>⚡ AI Content Generator</h2>
+        <p>Enter any ML topic and let Claude generate a full explanation tailored to your level.</p>
+
+        <div class="field">
+            <label for="topic">Topic</label>
+            <input type="text" id="topic"
+                   placeholder="e.g. Support Vector Machines, PCA, Gradient Descent..."
+                   onkeydown="if(event.key==='Enter') generateContent()">
+        </div>
+
+        <div class="field">
+            <label for="level">Your Level</label>
+            <select id="level">
+                <option value="beginner">🟢 Beginner</option>
+                <option value="intermediate">🟡 Intermediate</option>
+                <option value="advanced">🔴 Advanced</option>
+            </select>
+        </div>
+
+        <button class="btn-primary" onclick="generateContent()" style="width:100%; margin-top:8px;">
+            Generate Explanation ✦
+        </button>
+
+        <div class="output-box" id="output"></div>
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+    // Override generateContent to show/hide output-box properly
+    async function generateContent() {
+        const topic = document.getElementById("topic").value.trim();
+        const level = document.getElementById("level").value;
+        const outputEl = document.getElementById("output");
+
+        if (topic === "") { alert("Please enter a topic!"); return; }
+
+        outputEl.className = 'output-box show';
+        outputEl.innerHTML = '<span class="loading">✦ Claude is generating... please wait.</span>';
+
+        try {
+            const response = await fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic: topic, level: level })
+            });
+            const data = await response.json();
+            outputEl.textContent = data.result;
+        } catch (e) {
+            outputEl.textContent = "Error: Could not connect. Make sure Flask is running and your API key is set.";
+        }
+    }
+</script>
+
+</body>
+</html>
