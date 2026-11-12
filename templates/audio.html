@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnSphere — Audio Explainer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: #0f1623;
+            --card: #141e2e;
+            --border: #1e2d45;
+            --accent: #4f8ef7;
+            --accent2: #7c3aed;
+            --accent3: #06d6a0;
+            --warn: #f59e0b;
+            --text: #e8edf5;
+            --muted: #5a6a82;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 15% 30%, rgba(79,142,247,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 70%, rgba(124,58,237,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, rgba(6,214,160,0.03) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* HEADER */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(8,12,20,0.85);
+            backdrop-filter: blur(16px);
+        }
+
+        .logo {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 20px rgba(79,142,247,0.3);
+        }
+
+        header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        nav a:hover { color: var(--text); background: rgba(79,142,247,0.1); }
+        nav a.active { color: var(--accent); background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); }
+
+        /* MAIN */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        /* PAGE TITLE */
+        .page-title {
+            text-align: center;
+            margin-bottom: 52px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .page-title .icon-wrap {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(124,58,237,0.15));
+            border: 1px solid rgba(79,142,247,0.25);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(79,142,247,0.1);
+        }
+
+        .page-title h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title p {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* SEARCH CARD */
+        .search-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .search-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .topic-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .topic-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79,142,247,0.12);
+        }
+
+        .topic-input::placeholder { color: var(--muted); }
+
+        .explain-btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(79,142,247,0.25);
+        }
+
+        .explain-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(79,142,247,0.35); }
+        .explain-btn:active { transform: translateY(0); }
+        .explain-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* QUICK TOPICS */
+        .quick-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .quick-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .qtopic {
+            padding: 5px 14px;
+            background: rgba(79,142,247,0.06);
+            border: 1px solid rgba(79,142,247,0.18);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .qtopic:hover {
+            background: rgba(79,142,247,0.15);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* AUDIO PLAYER CARD */
+        .player-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            display: none;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .player-card.show { display: block; }
+
+        /* TOPIC BADGE */
+        .topic-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(6,214,160,0.08);
+            border: 1px solid rgba(6,214,160,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent3);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* WAVEFORM VISUALIZER */
+        .visualizer-wrap {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 80px;
+            overflow: hidden;
+        }
+
+        .bar {
+            width: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to top, var(--accent), var(--accent2));
+            transition: height 0.1s ease;
+        }
+
+        /* Generate 30 bars */
+        .bar { animation: none; }
+        .visualizer-wrap.playing .bar { animation: wave 0.8s ease-in-out infinite; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Stagger the animation */
+        .bar:nth-child(1)  { height: 20px; animation-delay: 0.0s; }
+        .bar:nth-child(2)  { height: 35px; animation-delay: 0.05s; }
+        .bar:nth-child(3)  { height: 50px; animation-delay: 0.1s; }
+        .bar:nth-child(4)  { height: 40px; animation-delay: 0.15s; }
+        .bar:nth-child(5)  { height: 60px; animation-delay: 0.2s; }
+        .bar:nth-child(6)  { height: 45px; animation-delay: 0.25s; }
+        .bar:nth-child(7)  { height: 30px; animation-delay: 0.3s; }
+        .bar:nth-child(8)  { height: 55px; animation-delay: 0.35s; }
+        .bar:nth-child(9)  { height: 40px; animation-delay: 0.4s; }
+        .bar:nth-child(10) { height: 65px; animation-delay: 0.45s; }
+        .bar:nth-child(11) { height: 50px; animation-delay: 0.5s; }
+        .bar:nth-child(12) { height: 35px; animation-delay: 0.55s; }
+        .bar:nth-child(13) { height: 45px; animation-delay: 0.6s; }
+        .bar:nth-child(14) { height: 60px; animation-delay: 0.65s; }
+        .bar:nth-child(15) { height: 30px; animation-delay: 0.7s; }
+        .bar:nth-child(16) { height: 50px; animation-delay: 0.75s; }
+        .bar:nth-child(17) { height: 40px; animation-delay: 0.8s; }
+        .bar:nth-child(18) { height: 65px; animation-delay: 0.7s; }
+        .bar:nth-child(19) { height: 45px; animation-delay: 0.65s; }
+        .bar:nth-child(20) { height: 55px; animation-delay: 0.6s; }
+        .bar:nth-child(21) { height: 35px; animation-delay: 0.55s; }
+        .bar:nth-child(22) { height: 50px; animation-delay: 0.5s; }
+        .bar:nth-child(23) { height: 60px; animation-delay: 0.45s; }
+        .bar:nth-child(24) { height: 40px; animation-delay: 0.4s; }
+        .bar:nth-child(25) { height: 30px; animation-delay: 0.35s; }
+        .bar:nth-child(26) { height: 55px; animation-delay: 0.3s; }
+        .bar:nth-child(27) { height: 45px; animation-delay: 0.25s; }
+        .bar:nth-child(28) { height: 35px; animation-delay: 0.2s; }
+        .bar:nth-child(29) { height: 50px; animation-delay: 0.15s; }
+        .bar:nth-child(30) { height: 25px; animation-delay: 0.1s; }
+
+        /* CONTROLS */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .ctrl-btn {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:hover { background: rgba(79,142,247,0.12); border-color: var(--accent); }
+
+        .play-btn {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(79,142,247,0.3);
+        }
+
+        .play-btn:hover { transform: scale(1.05); box-shadow: 0 6px 28px rgba(79,142,247,0.4); }
+
+        /* SPEED CONTROL */
+        .speed-wrap {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speed-label { font-size: 12px; color: var(--muted); }
+
+        .speed-btn {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .speed-btn.active { background: rgba(79,142,247,0.15); border-color: var(--accent); color: var(--accent); }
+        .speed-btn:hover { color: var(--text); }
+
+        /* VOICE SELECT */
+        .voice-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .voice-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+        .voice-select {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* TEXT DISPLAY */
+        .text-section { margin-top: 8px; }
+
+        .text-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .text-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .copy-text-btn {
+            padding: 4px 12px;
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .copy-text-btn:hover { color: var(--text); border-color: var(--accent); }
+
+        .explanation-text {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #c8d4e8;
+            white-space: pre-wrap;
+            min-height: 80px;
+        }
+
+        /* highlighted word during speech */
+        .word-highlight {
+            background: rgba(79,142,247,0.25);
+            border-radius: 3px;
+            padding: 1px 2px;
+            transition: background 0.1s;
+        }
+
+        /* STATUS */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+            transition: background 0.3s;
+        }
+
+        .status-dot.ready { background: var(--accent3); box-shadow: 0 0 8px rgba(6,214,160,0.5); }
+        .status-dot.speaking { background: var(--accent); box-shadow: 0 0 8px rgba(79,142,247,0.5); animation: pulse 1s ease infinite; }
+        .status-dot.loading { background: var(--warn); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* HISTORY */
+        .history-section {
+            margin-top: 28px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .history-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .history-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover { border-color: rgba(79,142,247,0.3); background: rgba(79,142,247,0.04); }
+
+        .history-icon { font-size: 16px; }
+        .history-name { font-size: 14px; font-weight: 500; flex: 1; }
+        .history-replay { font-size: 11px; color: var(--accent); opacity: 0; transition: opacity 0.2s; }
+        .history-item:hover .history-replay { opacity: 1; }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* LOADING STATE */
+        .loading-text {
+            color: var(--muted);
+            font-style: italic;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot-anim::after {
+            content: '';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0%   { content: ''; }
+            33%  { content: '.'; }
+            66%  { content: '..'; }
+            100% { content: '...'; }
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 32px 16px; }
+            header { padding: 14px 16px; }
+            .search-row { flex-direction: column; }
+            .page-title h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧠</div>
+    <h1>LearnSphere</h1>
+    <nav>
+        <a href="/">🏠 Home</a>
+        <a href="/generator">⚡ Generator</a>
+        <a href="/audio" class="active">🎙️ Audio</a>
+    </nav>
+</header>
+
+<main>
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+        <div class="icon-wrap">🎙️</div>
+        <h2>ML Audio Explainer</h2>
+        <p>Type any ML topic and hear a clear, spoken explanation.<br>Perfect for learning on the go!</p>
+    </div>
+
+    <!-- SEARCH CARD -->
+    <div class="search-card">
+        <div class="search-label">🔍 Enter any ML Topic</div>
+        <div class="search-row">
+            <input type="text" class="topic-input" id="topicInput"
+                   placeholder="e.g. Support Vector Machine, Gradient Descent, PCA..."
+                   onkeydown="if(event.key==='Enter') explainTopic()">
+            <button class="explain-btn" id="explainBtn" onclick="explainTopic()">
+                🎙️ Explain
+            </button>
+        </div>
+        <div class="quick-label">Quick topics:</div>
+        <div class="quick-topics">
+            <button class="qtopic" onclick="quickTopic('Regression')">Regression</button>
+            <button class="qtopic" onclick="quickTopic('Neural Networks')">Neural Networks</button>
+            <button class="qtopic" onclick="quickTopic('Decision Trees')">Decision Trees</button>
+            <button class="qtopic" onclick="quickTopic('K-Means Clustering')">K-Means</button>
+            <button class="qtopic" onclick="quickTopic('Support Vector Machine')">SVM</button>
+            <button class="qtopic" onclick="quickTopic('Gradient Descent')">Gradient Descent</button>
+            <button class="qtopic" onclick="quickTopic('Random Forest')">Random Forest</button>
+            <button class="qtopic" onclick="quickTopic('PCA')">PCA</button>
+            <button class="qtopic" onclick="quickTopic('Overfitting')">Overfitting</button>
+            <button class="qtopic" onclick="quickTopic('Backpropagation')">Backpropagation</button>
+        </div>
+    </div>
+
+    <!-- AUDIO PLAYER CARD -->
+    <div class="player-card" id="playerCard">
+
+        <div class="topic-badge">
+            🎯 <span id="topicBadge">Topic</span>
+        </div>
+
+        <!-- WAVEFORM -->
+        <div class="visualizer-wrap" id="visualizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <button class="ctrl-btn" onclick="replayAudio()" title="Replay">🔁</button>
+            <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+            <button class="ctrl-btn" onclick="stopAudio()" title="Stop">⏹</button>
+
+            <div class="speed-wrap">
+                <span class="speed-label">Speed:</span>
+                <button class="speed-btn" onclick="setSpeed(0.75)">0.75x</button>
+                <button class="speed-btn active" id="speed1" onclick="setSpeed(1)">1x</button>
+                <button class="speed-btn" onclick="setSpeed(1.25)">1.25x</button>
+                <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
+            </div>
+        </div>
+
+        <!-- VOICE SELECT -->
+        <div class="voice-row">
+            <span class="voice-label">🗣️ Voice:</span>
+            <select class="voice-select" id="voiceSelect" onchange="changeVoice()">
+                <option>Loading voices...</option>
+            </select>
+        </div>
+
+        <!-- TEXT DISPLAY -->
+        <div class="text-section">
+            <div class="text-header">
+                <div class="text-title">📄 Explanation Text</div>
+                <button class="copy-text-btn" onclick="copyText()">Copy</button>
+            </div>
+            <div class="explanation-text" id="explanationText">
+                <span class="loading-text">✦ Generating explanation<span class="dot-anim"></span></span>
+            </div>
+        </div>
+
+        <!-- STATUS -->
+        <div class="status-bar">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Ready</span>
+        </div>
+
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section" id="historySection" style="display:none">
+        <div class="history-title">🕘 Recently Explained</div>
+        <div class="history-list" id="historyList"></div>
+    </div>
+
+</main>
+
+<script>
+    // ── STATE ──
+    let currentText = '';
+    let currentTopic = '';
+    let utterance = null;
+    let isSpeaking = false;
+    let isPaused = false;
+    let speechRate = 1;
+    let selectedVoice = null;
+    let history = [];
+
+    // ── LOAD VOICES ──
+    function loadVoices() {
+        const voices = speechSynthesis.getVoices();
+        const sel = document.getElementById('voiceSelect');
+        if (!voices.length) return;
+
+        sel.innerHTML = '';
+
+        // Filter for English voices and prefer natural-sounding ones
+        const engVoices = voices.filter(v => v.lang.startsWith('en'));
+        const allVoices = engVoices.length ? engVoices : voices;
+
+        allVoices.forEach((v, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${v.name} (${v.lang})`;
+            sel.appendChild(opt);
+        });
+
+        // Auto-select a good default voice
+        const preferred = allVoices.findIndex(v =>
+            v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel')
+        );
+        sel.value = preferred >= 0 ? preferred : 0;
+        selectedVoice = allVoices[sel.value];
+    }
+
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    function changeVoice() {
+        const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+        const allVoices = voices.length ? voices : speechSynthesis.getVoices();
+        selectedVoice = allVoices[document.getElementById('voiceSelect').value];
+    }
+
+    // ── QUICK TOPIC ──
+    function quickTopic(t) {
+        document.getElementById('topicInput').value = t;
+        explainTopic();
+    }
+
+    // ── MAIN EXPLAIN FUNCTION ──
+    async function explainTopic() {
+        const topic = document.getElementById('topicInput').value.trim();
+        if (!topic) return;
+
+        currentTopic = topic;
+        stopAudio();
+
+        // Show player card
+        document.getElementById('playerCard').classList.add('show');
+        document.getElementById('topicBadge').textContent = topic;
+        document.getElementById('explanationText').innerHTML = '<span class="loading-text">✦ Generating explanation<span class="dot-anim"></span></span>';
+        document.getElementById('explainBtn').disabled = true;
+        setStatus('loading', 'Generating explanation...');
+
+        try {
+            const res = await fetch('/audio_explain', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic })
+            });
+            const data = await res.json();
+            currentText = data.text;
+
+            document.getElementById('explanationText').textContent = currentText;
+            document.getElementById('explainBtn').disabled = false;
+            setStatus('ready', 'Ready to play');
+
+            // Add to history
+            addToHistory(topic, currentText);
+
+            // Auto-play
+            setTimeout(() => speakText(currentText), 300);
+
+        } catch (e) {
+            document.getElementById('explanationText').textContent = 'Error loading explanation. Make sure Flask is running.';
+            document.getElementById('explainBtn').disabled = false;
+            setStatus('', 'Error');
+        }
+    }
+
+    // ── TEXT TO SPEECH ──
+    function speakText(text) {
+        if (!text) return;
+        stopAudio();
+
+        utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = speechRate;
+        utterance.pitch = 1.05;
+        utterance.volume = 1;
+
+        if (selectedVoice) utterance.voice = selectedVoice;
+
+        utterance.onstart = () => {
+            isSpeaking = true;
+            isPaused = false;
+            document.getElementById('playBtn').textContent = '⏸';
+            document.getElementById('visualizer').classList.add('playing');
+            setStatus('speaking', 'Speaking...');
+        };
+
+        utterance.onend = () => {
+            isSpeaking = false;
+            isPaused = false;
+            document.getElementById('playBtn').textContent = '▶';
+            document.getElementById('visualizer').classList.remove('playing');
+            setStatus('ready', 'Finished');
+        };
+
+        utterance.onerror = () => {
+            isSpeaking = false;
+            document.getElementById('playBtn').textContent = '▶';
+            document.getElementById('visualizer').classList.remove('playing');
+            setStatus('', 'Error in speech');
+        };
+
+        speechSynthesis.speak(utterance);
+    }
+
+    // ── PLAY / PAUSE ──
+    function togglePlay() {
+        if (!currentText) return;
+
+        if (isSpeaking && !isPaused) {
+            speechSynthesis.pause();
+            isPaused = true;
+            isSpeaking = false;
+            document.getElementById('playBtn').textContent = '▶';
+            document.getElementById('visualizer').classList.remove('playing');
+            setStatus('ready', 'Paused');
+        } else if (isPaused) {
+            speechSynthesis.resume();
+            isPaused = false;
+            isSpeaking = true;
+            document.getElementById('playBtn').textContent = '⏸';
+            document.getElementById('visualizer').classList.add('playing');
+            setStatus('speaking', 'Speaking...');
+        } else {
+            speakText(currentText);
+        }
+    }
+
+    // ── STOP ──
+    function stopAudio() {
+        speechSynthesis.cancel();
+        isSpeaking = false;
+        isPaused = false;
+        document.getElementById('playBtn').textContent = '▶';
+        document.getElementById('visualizer').classList.remove('playing');
+        setStatus('ready', 'Stopped');
+    }
+
+    // ── REPLAY ──
+    function replayAudio() {
+        if (currentText) speakText(currentText);
+    }
+
+    // ── SPEED ──
+    function setSpeed(rate) {
+        speechRate = rate;
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        if (isSpeaking) { stopAudio(); speakText(currentText); }
+    }
+
+    // ── STATUS ──
+    function setStatus(type, text) {
+        const dot = document.getElementById('statusDot');
+        dot.className = 'status-dot' + (type ? ' ' + type : '');
+        document.getElementById('statusText').textContent = text;
+    }
+
+    // ── COPY TEXT ──
+    function copyText() {
+        if (!currentText) return;
+        navigator.clipboard.writeText(currentText).then(() => {
+            const btn = document.querySelector('.copy-text-btn');
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+    }
+
+    // ── HISTORY ──
+    function addToHistory(topic, text) {
+        history = history.filter(h => h.topic !== topic);
+        history.unshift({ topic, text });
+        if (history.length > 5) history.pop();
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const section = document.getElementById('historySection');
+        const list = document.getElementById('historyList');
+        if (history.length === 0) { section.style.display = 'none'; return; }
+
+        section.style.display = 'block';
+        list.innerHTML = history.map(h => `
+            <div class="history-item" onclick="replayFromHistory('${h.topic.replace(/'/g, "\\'")}')">
+                <span class="history-icon">🎙️</span>
+                <span class="history-name">${h.topic}</span>
+                <span class="history-replay">▶ Play again</span>
+            </div>
+        `).join('');
+    }
+
+    function replayFromHistory(topic) {
+        const item = history.find(h => h.topic === topic);
+        if (!item) return;
+        currentTopic = item.topic;
+        currentText = item.text;
+        document.getElementById('topicInput').value = topic;
+        document.getElementById('topicBadge').textContent = topic;
+        document.getElementById('explanationText').textContent = item.text;
+        document.getElementById('playerCard').classList.add('show');
+        setStatus('ready', 'Ready to play');
+        speakText(item.text);
+    }
+
+    // Stop speech when leaving page
+    window.addEventListener('beforeunload', () => speechSynthesis.cancel());
+</script>
+
+</body>
+</html>

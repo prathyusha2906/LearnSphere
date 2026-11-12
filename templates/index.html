@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnSphere - ML Learning Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --card: #1a2235;
+            --border: #2a3a5c;
+            --accent: #3b82f6;
+            --accent2: #06b6d4;
+            --accent3: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 60%);
+        }
+
+        /* HEADER */
+        header {
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(10,14,26,0.9);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow: visible;
+        }
+        header h1 { flex-shrink: 0; }
+
+        .logo {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        main { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p { color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            max-width: 580px;
+            margin: 0 auto 20px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 13px 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-form input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        .search-form input::placeholder { color: var(--muted); }
+
+        .btn-search {
+            padding: 13px 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover { opacity: 0.88; transform: translateY(-1px); }
+
+        /* CHIPS */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .chip {
+            padding: 6px 14px;
+            background: rgba(59,130,246,0.07);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .chip:hover {
+            background: rgba(59,130,246,0.18);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 44px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 18px;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: default;
+        }
+
+        .stat:hover {
+            border-color: rgba(59,130,246,0.4);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon { font-size: 28px; margin-bottom: 10px; }
+        .stat-n { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+        .stat-l { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+        /* Last 2 boxes centered on second row */
+        .stats .stat:nth-child(4),
+        .stats .stat:nth-child(5) {
+            grid-column: span 1;
+        }
+
+        .stats-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 44px;
+            animation: fadeUp 0.65s ease;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            padding: 60px 0;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .empty-icon { font-size: 56px; margin-bottom: 16px; }
+        .empty h3 { font-size: 18px; margin-bottom: 6px; }
+        .empty p { color: var(--muted); font-size: 14px; }
+
+        /* RESULT */
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            animation: fadeUp 0.4s ease;
+        }
+
+        .result-header h2 { font-size: 26px; font-weight: 700; }
+
+        .badge-found {
+            padding: 3px 10px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--success);
+        }
+
+        .badge-ai {
+            padding: 3px 10px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #a78bfa;
+        }
+
+        .back-link {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--text); }
+
+        .section { margin-bottom: 24px; animation: fadeUp 0.5s ease; }
+
+        .sec-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .explanation-text { font-size: 15px; line-height: 1.7; color: #cbd5e1; }
+
+        .types-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .type-pill {
+            padding: 6px 14px;
+            background: rgba(139,92,246,0.08);
+            border: 1px solid rgba(139,92,246,0.22);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        /* CODE */
+        .code-wrap {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .code-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dots { display: flex; gap: 5px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dr { background: #ff5f57; }
+        .dy { background: #febc2e; }
+        .dg { background: #28c840; }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+
+        pre {
+            padding: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.65;
+            color: #e2e8f0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* AI CHAT */
+        .ai-box {
+            background: var(--card);
+            border: 1px solid rgba(59,130,246,0.22);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .ai-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ai-row { display: flex; gap: 8px; }
+
+        .ai-input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .ai-input:focus { border-color: var(--accent); }
+        .ai-input::placeholder { color: var(--muted); }
+
+        .ai-ask-btn {
+            padding: 10px 16px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.28);
+            border-radius: 8px;
+            color: var(--accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .ai-ask-btn:hover { background: rgba(59,130,246,0.22); }
+
+        .ai-resp {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: rgba(6,182,212,0.05);
+            border: 1px solid rgba(6,182,212,0.15);
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .ai-resp.show { display: block; animation: fadeUp 0.3s ease; }
+        .typing { color: var(--muted); font-style: italic; }
+
+        /* QUIZ */
+        .quiz-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .qcard {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .qcard.correct { border-color: var(--success); background: rgba(16,185,129,0.04); }
+        .qcard.wrong { border-color: var(--danger); background: rgba(239,68,68,0.04); }
+
+        .q-text {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .q-num {
+            min-width: 24px; height: 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .opts { display: flex; flex-direction: column; gap: 7px; }
+
+        .opt {
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: left;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            width: 100%;
+            transition: all 0.18s;
+        }
+
+        .opt:hover:not([disabled]) {
+            background: rgba(59,130,246,0.08);
+            border-color: rgba(59,130,246,0.4);
+        }
+
+        .opt.right {
+            background: rgba(16,185,129,0.1);
+            border-color: var(--success);
+            color: #6ee7b7;
+        }
+
+        .opt.wrong-pick {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--danger);
+            color: #fca5a5;
+        }
+
+        .opt.reveal {
+            background: rgba(16,185,129,0.06);
+            border-color: rgba(16,185,129,0.35);
+            color: #6ee7b7;
+        }
+
+        .q-fb {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-size: 12px;
+        }
+
+        .q-fb.show { display: block; }
+        .q-fb.c { background: rgba(16,185,129,0.08); color: #6ee7b7; }
+        .q-fb.w { background: rgba(239,68,68,0.08); color: #fca5a5; }
+
+        /* SCORE */
+        .score-box {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .score-box.show { display: block; animation: fadeUp 0.5s ease; }
+        .score-big { font-size: 50px; font-weight: 700; }
+        .score-msg { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+        .prog-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .prog-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .retry-btn {
+            margin-top: 16px;
+            padding: 10px 22px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.28);
+            border-radius: 8px;
+            color: var(--accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .retry-btn:hover { background: rgba(59,130,246,0.22); }
+
+
+        /* METHODS */
+        .methods-grid { display: flex; flex-direction: column; gap: 10px; }
+        .method-row {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            border-radius: 10px; padding: 14px 16px;
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+        }
+        .method-row:hover { border-color: rgba(59,130,246,0.3); }
+        .method-info { flex: 1; }
+        .method-name { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent2); font-weight: 500; margin-bottom: 4px; }
+        .method-desc { font-size: 12px; color: var(--muted); }
+        .explain-btn {
+            padding: 6px 14px; background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.25); border-radius: 7px; color: #a78bfa;
+            font-family: "Space Grotesk", sans-serif; font-size: 12px; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s;
+        }
+        .explain-btn:hover { background: rgba(139,92,246,0.2); }
+        .method-explanation {
+            display: none; margin-top: 10px; padding: 12px;
+            background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.15);
+            border-radius: 8px; font-size: 13px; line-height: 1.65; color: #cbd5e1;
+        }
+        .method-explanation.show { display: block; animation: fadeUp 0.3s ease; }
+
+        /* VISUAL LEARNING AIDS */
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .visual-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+
+        .visual-card:hover { border-color: rgba(59,130,246,0.35); }
+
+        .visual-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        canvas { max-height: 220px; }
+
+        @media (max-width: 600px) {
+            .visual-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 24px 14px; }
+            .hero h2 { font-size: 26px; }
+            .search-form { flex-direction: column; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            header { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧠</div>
+    <h1>LearnSphere</h1>
+    <nav style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <a href="/" style="color:#5a6a82;text-decoration:none;font-size:13px;padding:6px 14px;border-radius:8px;font-weight:500;white-space:nowrap;transition:all 0.2s;">🏠 Home</a>
+        <a href="/generator" style="color:#5a6a82;text-decoration:none;font-size:13px;padding:6px 14px;border-radius:8px;font-weight:500;white-space:nowrap;transition:all 0.2s;">⚡ Generator</a>
+        <a href="/audio" style="color:#4f8ef7;text-decoration:none;font-size:13px;padding:6px 14px;border-radius:8px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);font-weight:500;white-space:nowrap;">🎙️ Audio</a>
+    </nav>
+</header>
+
+<main>
+
+{% if not result %}
+
+<!-- HOME PAGE -->
+<div class="hero">
+    <h2>Master <em>Machine Learning</em><br>One Topic at a Time</h2>
+    <p>Explanations · Code Examples · Interactive Quizzes · AI Tutor</p>
+
+    <form class="search-form" method="POST" id="searchForm">
+        <input type="text" name="topic" id="topicInput"
+               placeholder="Try: regression, neural networks, clustering..."
+               autocomplete="off" required>
+        <button type="submit" class="btn-search">🔍 Explore</button>
+    </form>
+
+</div>
+
+<div class="stats">
+    <div class="stat">
+        <div class="stat-icon">📌</div>
+        <div class="stat-n">Explanation</div>
+        <div class="stat-l">Clear beginner-friendly topic overview</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">🗂️</div>
+        <div class="stat-n">Types & Concepts</div>
+        <div class="stat-l">Key subtypes and related concepts</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">💻</div>
+        <div class="stat-n">Sample Code</div>
+        <div class="stat-l">Ready-to-run Python code examples</div>
+    </div>
+</div>
+<div class="stats-bottom">
+    <div class="stat">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-n">AI Tutor</div>
+        <div class="stat-l">Ask anything about the topic instantly</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">📝</div>
+        <div class="stat-n">Quiz</div>
+        <div class="stat-l">Test your knowledge interactively</div>
+    </div>
+</div>
+
+<div class="empty">
+    <div class="empty-icon">🚀</div>
+    <h3>Start your ML journey</h3>
+    <p>Search a topic above or click a chip to begin</p>
+</div>
+
+{% else %}
+
+<!-- RESULT PAGE -->
+<div class="result-header">
+    <h2>{{ topic_name }}</h2>
+    <div class="badge-found">✓ Found</div>
+    {% if ai_generated %}
+    <div class="badge-ai">🤖 AI Generated</div>
+    {% endif %}
+    <a href="/" class="back-link">← Back</a>
+</div>
+
+<!-- EXPLANATION -->
+<div class="section">
+    <div class="sec-title">📌 Explanation</div>
+    <div class="card">
+        <p class="explanation-text">{{ result.explanation }}</p>
+    </div>
+</div>
+
+<!-- TYPES -->
+{% if result.types %}
+<div class="section">
+    <div class="sec-title">🗂 Types and Concepts</div>
+    <div class="card">
+        <div class="types-grid">
+            {% for t in result.types %}
+            <div class="type-pill">{{ t }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- CODE -->
+{% if result.code %}
+<div class="section">
+    <div class="sec-title">💻 Sample Code</div>
+    <div class="code-wrap">
+        <div class="code-top">
+            <div class="dots">
+                <div class="dot dr"></div>
+                <div class="dot dy"></div>
+                <div class="dot dg"></div>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre id="codeBlock">{{ result.code }}</pre>
+    </div>
+</div>
+{% endif %}
+
+<!-- VISUAL LEARNING AIDS -->
+<div class="section">
+    <div class="sec-title">📊 Visual Learning Aids</div>
+    <div class="visual-grid">
+
+        <!-- Chart 1: ML Algorithm Comparison -->
+        <div class="visual-card">
+            <div class="visual-title">⚡ Algorithm Accuracy Comparison</div>
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- Chart 2: Topic Concept Breakdown -->
+        <div class="visual-card">
+            <div class="visual-title">🧩 Concept Importance Breakdown</div>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <!-- Chart 3: Learning Progress (line) -->
+        <div class="visual-card">
+            <div class="visual-title">📈 Model Performance vs Training Size</div>
+            <canvas id="lineChart"></canvas>
+        </div>
+
+        <!-- Chart 4: Complexity vs Accuracy tradeoff -->
+        <div class="visual-card">
+            <div class="visual-title">🎯 Bias-Variance Tradeoff</div>
+            <canvas id="tradeoffChart"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<!-- AI TUTOR -->
+<div class="section">
+    <div class="sec-title">🤖 Ask AI Tutor</div>
+    <div class="ai-box">
+        <div class="ai-label">⚡ Ask Claude anything about {{ topic_name }}</div>
+        <div class="ai-row">
+            <input type="text" class="ai-input" id="aiQ"
+                   placeholder="e.g. Give me a real-world example..."
+                   onkeydown="if(event.key==='Enter') askAI()">
+            <button class="ai-ask-btn" onclick="askAI()">Ask ✦</button>
+        </div>
+        <div class="ai-resp" id="aiResp"></div>
+    </div>
+</div>
+
+<!-- QUIZ -->
+{% if result.quiz %}
+<div class="section">
+    <div class="sec-title">📝 Quiz Yourself</div>
+    <div class="quiz-list" id="quizList">
+        {% for q in result.quiz %}
+        {% set qi = loop.index0 %}
+        <div class="qcard" id="qc{{ qi }}" data-answer="{{ q.answer | e }}">
+            <div class="q-text">
+                <div class="q-num">{{ loop.index }}</div>
+                <span>{{ q.question }}</span>
+            </div>
+            <div class="opts">
+                {% for opt in q.options %}
+                <button class="opt" data-val="{{ opt | e }}" data-qi="{{ qi }}" onclick="pick(this)">{{ opt }}</button>
+                {% endfor %}
+            </div>
+            <div class="q-fb" id="fb{{ qi }}"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="score-box" id="scoreBox">
+        <div class="score-big" id="scoreBig"></div>
+        <div class="score-msg" id="scoreMsg"></div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+        <button class="retry-btn" onclick="retryQuiz()">🔄 Retry Quiz</button>
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+
+</main>
+
+<!-- Chart.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+// ── HOME ──
+function pickTopic(t) {
+    document.getElementById('topicInput').value = t;
+    document.getElementById('searchForm').submit();
+}
+
+// ── CODE COPY ──
+function copyCode(btn) {
+    const code = document.getElementById('codeBlock').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+
+// ── AI TUTOR ──
+async function askAI() {
+    const q = document.getElementById('aiQ').value.trim();
+    if (!q) return;
+
+    const topicName = "{{ topic_name }}";
+    const resp = document.getElementById('aiResp');
+    resp.className = 'ai-resp show';
+    resp.innerHTML = '<span class="typing">✦ Claude is thinking...</span>';
+
+    try {
+        const res = await fetch('/ai_explain', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic: topicName, question: q })
+        });
+        const data = await res.json();
+        resp.textContent = data.answer;
+    } catch (e) {
+        resp.textContent = 'Could not reach AI. Make sure ANTHROPIC_API_KEY is set.';
+    }
+}
+
+// ── QUIZ ──
+let answered = {};
+let score = 0;
+const totalQ = document.querySelectorAll('.qcard').length;
+
+function pick(btn) {
+    const qi = btn.getAttribute('data-qi');
+    if (answered[qi]) return;
+    answered[qi] = true;
+
+    const card = document.getElementById('qc' + qi);
+    const correct = card.getAttribute('data-answer');
+    const selected = btn.getAttribute('data-val');
+    const fb = document.getElementById('fb' + qi);
+
+    card.querySelectorAll('.opt').forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        btn.classList.add('right');
+        card.classList.add('correct');
+        fb.textContent = '✅ Correct!';
+        fb.className = 'q-fb show c';
+        score++;
+    } else {
+        btn.classList.add('wrong-pick');
+        card.classList.add('wrong');
+        fb.textContent = '❌ Wrong! Correct: ' + correct;
+        fb.className = 'q-fb show w';
+        card.querySelectorAll('.opt').forEach(b => {
+            if (b.getAttribute('data-val') === correct) b.classList.add('reveal');
+        });
+    }
+
+    if (Object.keys(answered).length === totalQ) {
+        setTimeout(showScore, 700);
+    }
+}
+
+function showScore() {
+    const box = document.getElementById('scoreBox');
+    const big = document.getElementById('scoreBig');
+    const msg = document.getElementById('scoreMsg');
+    const fill = document.getElementById('progFill');
+
+    box.classList.add('show');
+    big.textContent = score + '/' + totalQ;
+
+    const pct = Math.round((score / totalQ) * 100);
+    fill.style.width = pct + '%';
+
+    if (pct === 100) msg.textContent = '🏆 Perfect score!';
+    else if (pct >= 60) msg.textContent = '👍 Good job! Keep it up.';
+    else msg.textContent = '📚 Keep studying, you got this!';
+}
+
+function retryQuiz() {
+    answered = {};
+    score = 0;
+
+    document.querySelectorAll('.qcard').forEach(card => {
+        card.className = 'qcard';
+        card.querySelectorAll('.opt').forEach(b => {
+            b.disabled = false;
+            b.className = 'opt';
+        });
+        const qi = card.id.replace('qc', '');
+        const fb = document.getElementById('fb' + qi);
+        fb.className = 'q-fb';
+        fb.textContent = '';
+    });
+
+    document.getElementById('scoreBox').classList.remove('show');
+    document.getElementById('progFill').style.width = '0%';
+}
+    // ── VISUAL LEARNING AIDS — FULLY TOPIC SPECIFIC ──
+    const topic = "{{ topic_name | lower }}";
+
+    const colors = ['rgba(59,130,246,0.8)','rgba(139,92,246,0.8)','rgba(6,182,212,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'];
+    const borderColors = ['rgba(59,130,246,1)','rgba(139,92,246,1)','rgba(6,182,212,1)','rgba(16,185,129,1)','rgba(245,158,11,1)'];
+
+    const axisStyle = {
+        x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    };
+    const legendStyle = { labels: { color: '#94a3b8', font: { size: 10 }, padding: 8 } };
+
+    // ── CHART DEFINITIONS PER TOPIC ──
+    const topicVisuals = {
+
+        "regression": {
+            titles: ['📉 Regression Line Fit', '📊 Error Types Comparison', '📈 R² Score by Model', '🎯 Residual Distribution'],
+            charts: [
+                // Scatter + Line: actual data points + regression line
+                (ctx) => new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            { label: 'Data Points', data: [{x:1,y:2.1},{x:2,y:3.9},{x:3,y:6.2},{x:4,y:7.8},{x:5,y:10.1},{x:6,y:11.9},{x:7,y:14.2}], backgroundColor: 'rgba(59,130,246,0.8)', pointRadius: 6 },
+                            { label: 'Regression Line', data: [{x:1,y:2},{x:2,y:4},{x:3,y:6},{x:4,y:8},{x:5,y:10},{x:6,y:12},{x:7,y:14}], type: 'line', borderColor: 'rgba(239,68,68,0.9)', backgroundColor: 'transparent', pointRadius: 0, tension: 0 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Bar: MAE vs MSE vs RMSE
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Linear', 'Ridge', 'Lasso', 'Polynomial', 'ElasticNet'],
+                        datasets: [
+                            { label: 'MAE', data: [3.2, 2.8, 2.9, 2.1, 2.7], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 },
+                            { label: 'RMSE', data: [4.1, 3.5, 3.7, 2.6, 3.4], backgroundColor: 'rgba(239,68,68,0.7)', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Horizontal bar: R² scores
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Linear', 'Ridge', 'Lasso', 'Polynomial', 'ElasticNet'],
+                        datasets: [{ label: 'R² Score', data: [0.72, 0.83, 0.81, 0.91, 0.85], backgroundColor: colors, borderRadius: 4 }]
+                    },
+                    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Line: Residuals
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1','2','3','4','5','6','7','8'],
+                        datasets: [{ label: 'Residuals', data: [0.1,-0.3,0.2,-0.1,0.4,-0.2,0.1,-0.3], borderColor: 'rgba(245,158,11,0.9)', backgroundColor: 'rgba(245,158,11,0.08)', fill: true, tension: 0.3, pointRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                })
+            ]
+        },
+
+        "classification": {
+            titles: ['🎯 Confusion Matrix Heatmap', '📊 Precision vs Recall by Model', '📈 ROC Curve', '🧩 Class Distribution'],
+            charts: [
+                // Heatmap-style bar for confusion matrix
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['True Pos', 'False Pos', 'False Neg', 'True Neg'],
+                        datasets: [{ label: 'Count', data: [85, 10, 15, 90], backgroundColor: ['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)','rgba(245,158,11,0.8)','rgba(59,130,246,0.8)'], borderRadius: 6 }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Grouped bar: Precision vs Recall
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Logistic', 'KNN', 'SVM', 'Random Forest', 'XGBoost'],
+                        datasets: [
+                            { label: 'Precision', data: [0.78, 0.74, 0.87, 0.91, 0.94], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 },
+                            { label: 'Recall', data: [0.75, 0.70, 0.84, 0.89, 0.92], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Line: ROC Curve
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['0.0','0.2','0.4','0.6','0.8','1.0'],
+                        datasets: [
+                            { label: 'ROC (AUC=0.92)', data: [0,0.55,0.78,0.88,0.94,1.0], borderColor: 'rgba(59,130,246,0.9)', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4 },
+                            { label: 'Random Guess', data: [0,0.2,0.4,0.6,0.8,1.0], borderColor: 'rgba(100,116,139,0.5)', backgroundColor: 'transparent', borderDash: [5,5], pointRadius: 0 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Doughnut: class distribution
+                (ctx) => new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Class A', 'Class B', 'Class C'],
+                        datasets: [{ data: [45, 35, 20], backgroundColor: ['rgba(59,130,246,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'], borderColor: '#1a2235', borderWidth: 2 }]
+                    },
+                    options: { responsive: true, cutout: '60%', plugins: { legend: { position: 'bottom', ...legendStyle } } }
+                })
+            ]
+        },
+
+        "neural networks": {
+            titles: ['📉 Loss over Epochs', '📊 Layer Accuracy Comparison', '📈 Activation Function Curves', '🧩 Architecture Accuracy'],
+            charts: [
+                // Line: Training & Validation Loss
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1','5','10','20','30','50','100'],
+                        datasets: [
+                            { label: 'Train Loss', data: [2.3,1.6,1.1,0.7,0.4,0.2,0.1], borderColor: 'rgba(239,68,68,0.9)', backgroundColor: 'rgba(239,68,68,0.06)', fill: true, tension: 0.4, pointRadius: 4 },
+                            { label: 'Val Loss', data: [2.4,1.8,1.3,0.9,0.6,0.4,0.35], borderColor: 'rgba(245,158,11,0.9)', backgroundColor: 'rgba(245,158,11,0.06)', fill: true, tension: 0.4, pointRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Bar: accuracy by number of layers
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1 Layer', '2 Layers', '3 Layers', '5 Layers', '10 Layers'],
+                        datasets: [{ label: 'Accuracy %', data: [68, 79, 86, 91, 93], backgroundColor: colors, borderRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Line: Activation functions
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['-3','-2','-1','0','1','2','3'],
+                        datasets: [
+                            { label: 'ReLU', data: [0,0,0,0,1,2,3], borderColor: 'rgba(59,130,246,0.9)', tension: 0.1, pointRadius: 3, fill: false },
+                            { label: 'Sigmoid', data: [0.05,0.12,0.27,0.5,0.73,0.88,0.95], borderColor: 'rgba(16,185,129,0.9)', tension: 0.4, pointRadius: 3, fill: false },
+                            { label: 'Tanh', data: [-0.99,-0.96,-0.76,0,0.76,0.96,0.99], borderColor: 'rgba(245,158,11,0.9)', tension: 0.4, pointRadius: 3, fill: false }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Horizontal bar: architecture comparison
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Perceptron', 'MLP', 'CNN', 'RNN/LSTM', 'Transformer'],
+                        datasets: [{ label: 'Accuracy %', data: [65, 80, 93, 88, 97], backgroundColor: colors, borderRadius: 4 }]
+                    },
+                    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                })
+            ]
+        },
+
+        "clustering": {
+            titles: ['🔵 K-Means Cluster Visualization', '📊 Inertia vs K Value', '📈 Silhouette Scores', '🧩 Algorithm Comparison'],
+            charts: [
+                // Scatter: cluster visualization
+                (ctx) => new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            { label: 'Cluster 1', data: [{x:1,y:1},{x:1.5,y:2},{x:2,y:1.5},{x:1.2,y:1.8},{x:0.8,y:1.2}], backgroundColor: 'rgba(59,130,246,0.8)', pointRadius: 7 },
+                            { label: 'Cluster 2', data: [{x:5,y:5},{x:5.5,y:6},{x:6,y:5.2},{x:4.8,y:5.8},{x:5.2,y:4.9}], backgroundColor: 'rgba(16,185,129,0.8)', pointRadius: 7 },
+                            { label: 'Cluster 3', data: [{x:8,y:2},{x:8.5,y:1.5},{x:9,y:2.5},{x:7.8,y:1.8},{x:8.2,y:2.2}], backgroundColor: 'rgba(245,158,11,0.8)', pointRadius: 7 },
+                            { label: 'Centroids', data: [{x:1.3,y:1.5},{x:5.3,y:5.4},{x:8.3,y:2}], backgroundColor: 'rgba(239,68,68,1)', pointRadius: 12, pointStyle: 'star' }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Line: Elbow method (Inertia vs K)
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['K=1','K=2','K=3','K=4','K=5','K=6','K=7'],
+                        datasets: [{ label: 'Inertia (Elbow Method)', data: [800, 400, 180, 150, 130, 120, 115], borderColor: 'rgba(59,130,246,0.9)', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Bar: Silhouette scores
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['K=2','K=3','K=4','K=5','K=6'],
+                        datasets: [{ label: 'Silhouette Score', data: [0.62, 0.78, 0.71, 0.65, 0.58], backgroundColor: colors, borderRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Horizontal bar: algorithm comparison
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['K-Means', 'DBSCAN', 'Hierarchical', 'GMM', 'Spectral'],
+                        datasets: [{ label: 'Silhouette Score %', data: [78, 82, 74, 85, 80], backgroundColor: colors, borderRadius: 4 }]
+                    },
+                    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                })
+            ]
+        },
+
+        "decision trees": {
+            titles: ['🌳 Tree Depth vs Accuracy', '📊 Feature Importance', '📈 Ensemble Methods Comparison', '🎯 Gini vs Entropy'],
+            charts: [
+                // Line: overfitting with depth
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Depth 1','Depth 2','Depth 3','Depth 5','Depth 8','Depth 12','No Limit'],
+                        datasets: [
+                            { label: 'Train Accuracy', data: [62, 74, 82, 91, 97, 99, 100], borderColor: 'rgba(59,130,246,0.9)', backgroundColor: 'rgba(59,130,246,0.06)', fill: true, tension: 0.4, pointRadius: 4 },
+                            { label: 'Test Accuracy', data: [60, 73, 81, 88, 85, 79, 72], borderColor: 'rgba(16,185,129,0.9)', backgroundColor: 'rgba(16,185,129,0.06)', fill: true, tension: 0.4, pointRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Horizontal bar: feature importance
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
+                        datasets: [{ label: 'Importance', data: [0.35, 0.28, 0.18, 0.12, 0.07], backgroundColor: colors, borderRadius: 4 }]
+                    },
+                    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Bar: ensemble methods
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Single DT', 'Bagging', 'Random Forest', 'Gradient Boost', 'XGBoost'],
+                        datasets: [{ label: 'Accuracy %', data: [76, 83, 89, 92, 95], backgroundColor: colors, borderRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+                }),
+                // Bar: Gini vs Entropy
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Dataset 1', 'Dataset 2', 'Dataset 3', 'Dataset 4'],
+                        datasets: [
+                            { label: 'Gini', data: [88, 84, 91, 86], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 },
+                            { label: 'Entropy', data: [87, 85, 90, 87], backgroundColor: 'rgba(139,92,246,0.7)', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                })
+            ]
+        },
+
+        "ridge regression": {
+            titles: ['📉 Alpha vs Coefficients', '📊 Ridge vs Lasso vs OLS', '📈 Cross-Validation Score', '🎯 Regularization Effect'],
+            charts: [
+                // Line: coefficient shrinkage
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['0.001','0.01','0.1','1','10','100','1000'],
+                        datasets: [
+                            { label: 'Coef 1', data: [2.8,2.6,2.1,1.4,0.8,0.3,0.05], borderColor: 'rgba(59,130,246,0.9)', tension: 0.4, pointRadius: 3, fill: false },
+                            { label: 'Coef 2', data: [-1.9,-1.7,-1.3,-0.9,-0.5,-0.2,-0.03], borderColor: 'rgba(239,68,68,0.9)', tension: 0.4, pointRadius: 3, fill: false },
+                            { label: 'Coef 3', data: [3.2,2.9,2.3,1.6,0.9,0.35,0.06], borderColor: 'rgba(16,185,129,0.9)', tension: 0.4, pointRadius: 3, fill: false }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Bar: model comparison
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['OLS', 'Ridge', 'Lasso', 'ElasticNet'],
+                        datasets: [
+                            { label: 'Train R²', data: [0.95, 0.91, 0.89, 0.90], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 },
+                            { label: 'Test R²', data: [0.61, 0.83, 0.81, 0.82], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Line: CV score vs alpha
+                (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['0.01','0.1','1','10','100'],
+                        datasets: [{ label: 'CV Score', data: [0.72, 0.79, 0.85, 0.83, 0.76], borderColor: 'rgba(245,158,11,0.9)', backgroundColor: 'rgba(245,158,11,0.08)', fill: true, tension: 0.4, pointRadius: 6 }]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                }),
+                // Bar: bias variance for ridge
+                (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['α=0.001', 'α=0.1', 'α=1', 'α=10', 'α=100'],
+                        datasets: [
+                            { label: 'Bias²', data: [5, 12, 22, 38, 58], backgroundColor: 'rgba(239,68,68,0.7)', borderRadius: 4 },
+                            { label: 'Variance', data: [60, 40, 22, 12, 5], backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+                })
+            ]
+        }
+    };
+
+    // ── DEFAULT for AI-generated topics ──
+    const defaultVisuals = {
+        titles: ['📊 Model Accuracy Comparison', '🧩 Concept Breakdown', '📈 Train vs Test Performance', '🎯 Bias-Variance Tradeoff'],
+        charts: [
+            (ctx) => new Chart(ctx, {
+                type: 'bar',
+                data: { labels: ['Baseline', 'Optimized', 'Tuned', 'Ensemble', 'Best'], datasets: [{ label: 'Accuracy %', data: [65, 74, 82, 88, 93], backgroundColor: colors, borderRadius: 5 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: axisStyle }
+            }),
+            (ctx) => new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: ['Theory', 'Implementation', 'Evaluation', 'Tuning', 'Application'], datasets: [{ data: [20, 25, 20, 15, 20], backgroundColor: colors, borderColor: '#1a2235', borderWidth: 2 }] },
+                options: { responsive: true, cutout: '60%', plugins: { legend: { position: 'bottom', ...legendStyle } } }
+            }),
+            (ctx) => new Chart(ctx, {
+                type: 'line',
+                data: { labels: ['100','500','1K','5K','10K','50K'], datasets: [
+                    { label: 'Train', data: [94,92,91,90,90,90], borderColor: 'rgba(59,130,246,0.9)', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.4, pointRadius: 4 },
+                    { label: 'Test', data: [55,67,76,83,88,90], borderColor: 'rgba(16,185,129,0.9)', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.4, pointRadius: 4 }
+                ]},
+                options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+            }),
+            (ctx) => new Chart(ctx, {
+                type: 'line',
+                data: { labels: ['Very Low','Low','Medium','High','Very High'], datasets: [
+                    { label: 'Bias', data: [90,70,45,25,10], borderColor: 'rgba(239,68,68,0.9)', backgroundColor: 'rgba(239,68,68,0.06)', fill: true, tension: 0.4, pointRadius: 4 },
+                    { label: 'Variance', data: [5,15,35,65,95], borderColor: 'rgba(245,158,11,0.9)', backgroundColor: 'rgba(245,158,11,0.06)', fill: true, tension: 0.4, pointRadius: 4 }
+                ]},
+                options: { responsive: true, plugins: { legend: legendStyle }, scales: axisStyle }
+            })
+        ]
+    };
+
+    // Pick visuals for current topic
+    const visuals = topicVisuals[topic] || defaultVisuals;
+
+    // Update chart titles
+    const titleEls = document.querySelectorAll('.visual-title');
+    titleEls.forEach((el, i) => { if (visuals.titles[i]) el.textContent = visuals.titles[i]; });
+
+    // Render all 4 charts
+    const ctxIds = ['barChart', 'pieChart', 'lineChart', 'tradeoffChart'];
+    ctxIds.forEach((id, i) => {
+        const ctx = document.getElementById(id);
+        if (ctx && visuals.charts[i]) visuals.charts[i](ctx);
+    });
+
+
+    // ── TOPIC DATA LIBRARY ──
+    const topicCharts = {
+        "regression": {
+            bar: { labels: ['Linear', 'Polynomial', 'Ridge', 'Lasso', 'Elastic Net'], data: [72, 79, 83, 81, 85], title: 'Regression Types — R² Score %' },
+            pie: { labels: ['Math/Stats', 'Feature Eng', 'Model Fit', 'Evaluation', 'Tuning'], data: [30, 20, 25, 15, 10] },
+            line: { train: [98, 96, 94, 92, 91, 90], test: [55, 68, 76, 83, 88, 90], title: 'Train vs Test Accuracy' },
+            tradeoff: { bias: [92, 72, 48, 28, 12], variance: [3, 12, 32, 62, 92], error: [95, 72, 48, 68, 88] }
+        },
+        "classification": {
+            bar: { labels: ['Logistic', 'KNN', 'SVM', 'Random Forest', 'XGBoost'], data: [78, 74, 87, 91, 94], title: 'Classifier Accuracy %' },
+            pie: { labels: ['Precision', 'Recall', 'F1 Score', 'AUC-ROC', 'Accuracy'], data: [22, 22, 24, 18, 14] },
+            line: { train: [96, 94, 93, 92, 91, 91], test: [58, 70, 78, 85, 89, 91], title: 'Train vs Test Accuracy' },
+            tradeoff: { bias: [88, 68, 44, 24, 10], variance: [5, 14, 36, 66, 94], error: [93, 70, 46, 70, 92] }
+        },
+        "neural networks": {
+            bar: { labels: ['Perceptron', 'MLP', 'CNN', 'RNN', 'Transformer'], data: [65, 80, 93, 88, 97], title: 'Neural Net Types — Accuracy %' },
+            pie: { labels: ['Layers', 'Activation Fns', 'Backprop', 'Optimizers', 'Regularization'], data: [20, 18, 28, 20, 14] },
+            line: { train: [70, 85, 91, 94, 96, 97], test: [45, 62, 75, 84, 90, 95], title: 'Epochs vs Accuracy' },
+            tradeoff: { bias: [85, 65, 40, 20, 8], variance: [8, 18, 40, 70, 95], error: [90, 68, 44, 72, 94] }
+        },
+        "clustering": {
+            bar: { labels: ['K-Means', 'DBSCAN', 'Hierarchical', 'GMM', 'Spectral'], data: [78, 82, 74, 85, 80], title: 'Clustering Algorithms — Silhouette Score %' },
+            pie: { labels: ['Distance Metric', 'K Selection', 'Initialization', 'Convergence', 'Evaluation'], data: [25, 22, 18, 20, 15] },
+            line: { train: [55, 68, 76, 81, 84, 86], test: [50, 64, 73, 79, 83, 85], title: 'Clusters vs Silhouette Score' },
+            tradeoff: { bias: [80, 60, 42, 26, 14], variance: [6, 16, 34, 60, 88], error: [86, 66, 48, 68, 88] }
+        },
+        "decision trees": {
+            bar: { labels: ['Decision Tree', 'Random Forest', 'Gradient Boost', 'XGBoost', 'LightGBM'], data: [76, 89, 92, 95, 96], title: 'Tree-Based Models — Accuracy %' },
+            pie: { labels: ['Gini Impurity', 'Entropy', 'Pruning', 'Depth Control', 'Ensemble'], data: [20, 20, 18, 22, 20] },
+            line: { train: [99, 97, 95, 94, 93, 93], test: [60, 72, 80, 86, 90, 92], title: 'Tree Depth vs Accuracy' },
+            tradeoff: { bias: [85, 62, 38, 20, 8], variance: [4, 16, 38, 68, 96], error: [89, 68, 46, 72, 94] }
+        },
+        "ridge regression": {
+            bar: { labels: ['No Reg', 'Ridge α=0.1', 'Ridge α=1', 'Ridge α=10', 'Ridge α=100'], data: [65, 78, 85, 83, 76], title: 'Ridge Alpha vs R² Score %' },
+            pie: { labels: ['L2 Penalty', 'Coefficient Shrink', 'Cross-Val', 'Feature Scaling', 'Hypertuning'], data: [28, 24, 18, 18, 12] },
+            line: { train: [96, 93, 90, 88, 86, 85], test: [52, 66, 76, 83, 85, 85], title: 'Alpha vs Model Performance' },
+            tradeoff: { bias: [90, 70, 50, 35, 22], variance: [2, 10, 28, 55, 85], error: [92, 70, 50, 68, 88] }
+        }
+    };
+
+
+</script>
+</body>
+</html>

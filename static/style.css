@@ -1,0 +1,191 @@
+/* ─── LearnSphere Global Styles ─── */
+
+:root {
+    --bg: #0a0e1a;
+    --card: #1a2235;
+    --border: #2a3a5c;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --accent3: #8b5cf6;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 60%);
+}
+
+/* HEADER */
+header {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+
+header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-badge {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+nav a:hover, nav a.active {
+    color: var(--text);
+    background: rgba(59,130,246,0.1);
+}
+
+main { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+
+/* CARDS */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+}
+
+.card:hover { border-color: rgba(59,130,246,0.28); }
+
+/* BUTTONS */
+.btn-primary {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.btn-secondary {
+    padding: 10px 18px;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover { background: rgba(59,130,246,0.2); }
+
+/* FORM ELEMENTS */
+input, select, textarea {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+input::placeholder, textarea::placeholder { color: var(--muted); }
+
+select option { background: var(--card); color: var(--text); }
+
+/* OUTPUT BOX */
+.output-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    min-height: 80px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #cbd5e1;
+    white-space: pre-wrap;
+    animation: fadeUp 0.4s ease;
+}
+
+/* SECTION TITLE */
+.sec-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    main { padding: 24px 14px; }
+    header { padding: 16px 20px; }
+}
